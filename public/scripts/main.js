@@ -3,7 +3,6 @@ import { PlayScene } from "./scenes/PlayScene.js"
 import { ResultScene } from "./scenes/ResultScene.js"
 
 
-
 const config = {
     parent: 'mainFrame',
     type: Phaser.AUTO,
