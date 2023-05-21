@@ -1,3 +1,5 @@
+
+
 export class PlayScene extends Phaser.Scene {
     constructor() {
         super({ key: "PlayScene" })
@@ -7,6 +9,7 @@ export class PlayScene extends Phaser.Scene {
     init() {
         // Can be defined on your own Scenes.
         // This method is called by the Scene Manager when the scene starts, before preload() and create().
+
     }
 
 
