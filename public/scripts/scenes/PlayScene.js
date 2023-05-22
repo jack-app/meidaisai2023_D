@@ -18,7 +18,7 @@ export class PlayScene extends Phaser.Scene {
         // This method is called by the Scene Manager, after init() and before create(), only if the Scene has a LoaderPlugin.
         // After this method completes, if the LoaderPlugin's queue isn't empty, the LoaderPlugin will start automatically
         this.load.image("coin","scripts/assets/coin.png")//ここで画像ダウンロード
-
+        this.load.image("background","scripts/assets/background.jpg")
     }
 
 
@@ -26,6 +26,7 @@ export class PlayScene extends Phaser.Scene {
         // Can be defined on your own Scenes. Use it to create your game objects.
         // This method is called by the Scene Manager when the scene starts, after init() and preload().
         // If the LoaderPlugin started after preload(), then this method is called only after loading is complete.
+        this.add.image(400, 320, "background");// 画面の中心に表示します
         let coinGroup = this.physics.add.group();//動く物体をまとめる
         coinGroup.create(190, 0, "coin");//coin1
         coinGroup.create(240, 0, "coin");//coin2
