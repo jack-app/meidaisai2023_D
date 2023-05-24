@@ -9,8 +9,8 @@ export class PlayScene extends Phaser.Scene {
     init() {
         // Can be defined on your own Scenes.
         // This method is called by the Scene Manager when the scene starts, before preload() and create().
-        console.log(Judgeyaku([100,300,800])); //{yakus:[{num:1,name:'三光'}],mon:5}
-        console.log(Judgeyaku([100,]));        //{yakus:[],mon:0}
+        //console.log(Judgeyaku([100,300,800])); //{yakus:[{num:1,name:'三光'}],mon:5}
+        //console.log(Judgeyaku([100,]));        //{yakus:[],mon:0}
     }
 
 
