@@ -7,8 +7,8 @@ export const CARDS = [100,120,130,131,210,220,230,231,300,320,330,331,410,420,43
 const config = {
     parent: 'mainFrame',
     type: Phaser.AUTO,
-    height: 600,
-    width: 800,
+    height: 500,
+    width: 900,
     scene: [StartScene, PlayScene, ResultScene]
 }
 
