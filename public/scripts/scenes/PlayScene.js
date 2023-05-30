@@ -14,6 +14,7 @@ export class PlayScene extends Phaser.Scene {
 
 
         console.log(Judgeyaku([110,210,310,410]));
+        console.log(Judgeyaku([]));
 
     }
 

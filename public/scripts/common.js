@@ -46,7 +46,7 @@ export function Judgeyaku(handlist){
 
 	}
 
-	if(hand.has(300) && hand.has(910))
+	if(hand.has(300) && hand.has(910)){
 		yaku.yakus.push('花見酒');
 		yaku.mon+=5;
 
@@ -178,5 +178,5 @@ export function Judgeyaku(handlist){
 	return yaku;
 
 	
-}
+	}
 
