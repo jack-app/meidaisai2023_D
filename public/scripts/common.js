@@ -68,7 +68,7 @@ export function Judgeyaku(handlist){
 
 	let yaku_akatan = 0;
 
-	if(hand.has(110) && hand.has(210) && hand.has(310)){
+	if(hand.has(120) && hand.has(220) && hand.has(320)){
 
 		yaku.yakus.push('赤短');
 		yaku.mon+=6;
@@ -76,34 +76,34 @@ export function Judgeyaku(handlist){
 
 	}
 
-		if(yaku_akatan===1 && hand.has(410)){
+		if(yaku_akatan===1 && hand.has(420)){
 			yaku.mon+=1;
 		}
 
-		if(yaku_akatan===1 && hand.has(510)){
+		if(yaku_akatan===1 && hand.has(520)){
 			yaku.mon+=1;
 		}
 
-		if(yaku_akatan===1 && hand.has(610)){
+		if(yaku_akatan===1 && hand.has(620)){
 			yaku.mon+=1;
 		}
 
-		if(yaku_akatan===1 && hand.has(710)){
+		if(yaku_akatan===1 && hand.has(720)){
 			yaku.mon+=1;
 		}
 
-		if(yaku_akatan===1 && hand.has(910)){
+		if(yaku_akatan===1 && hand.has(920)){
 			yaku.mon+=1;
 		}	
 
-		if(yaku_akatan===1 && hand.has(1110)){
+		if(yaku_akatan===1 && hand.has(1120)){
 			yaku.mon+=1;
 		}
 
 
 	let yaku_aotan = 0;
 
-	if(hand.has(610) && hand.has(910) && hand.has(1010)){
+	if(hand.has(620) && hand.has(920) && hand.has(1020)){
 
 		yaku.yakus.push('青短');
 		yaku.mon+=6;
@@ -111,27 +111,27 @@ export function Judgeyaku(handlist){
 
 	}
 
-		if(yaku_aotan===1 && hand.has(110)){
+		if(yaku_aotan===1 && hand.has(120)){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(210)){
+		if(yaku_aotan===1 && hand.has(220)){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(310)){
+		if(yaku_aotan===1 && hand.has(320)){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(410)){
+		if(yaku_aotan===1 && hand.has(420)){
 			yaku.mon+=1;
 		}
 	
-		if(yaku_aotan===1 && hand.has(510)){
+		if(yaku_aotan===1 && hand.has(520)){
 			yaku.mon+=1;
 		}
 	
-		if(yaku_aotan===1 && hand.has(710)){
+		if(yaku_aotan===1 && hand.has(720)){
 			yaku.mon+=1;
 		}
 
@@ -143,10 +143,10 @@ export function Judgeyaku(handlist){
 		 
 		})
 
-		if(tane.length>9){
+		if(tane.length > 4){
 
 			yaku.yakus.push('タネ');
-			yaku.mon += (tane.length - 9);
+			yaku.mon += (tane.length - 4);
 
 		}
 
