@@ -135,8 +135,23 @@ export function Judgeyaku(handlist){
 			yaku.mon+=1;
 		}
 
+	
+
+		let tane = hand.filter( function( value ) {
+ 
+			return    9 < (value%100) <20;
+		 
+		})
+
+		if(tane.length>9){
+
+			yaku.yakus.push('タネ');
+			yaku.mon += (tane.length - 9);
+
+		}
 
 
+ 
 
 
 
