@@ -24,16 +24,16 @@ export class ResultScene extends Phaser.Scene {
         // If the LoaderPlugin started after preload(), then this method is called only after loading is complete.
         const sceneName = this.add.text(150, 70, 'ResultScene').setFontSize(30).setFontFamily("Arial").setOrigin(0.5).setInteractive();
 
-	    const change = this.add.text(150, 130, 'Change Scene!').setFontSize(20).setFontFamily("Arial").setOrigin(0.5).setInteractive();
+	    const change = this.add.text(600, 70, 'スタートに戻る').setFontSize(20).setFontFamily("Arial").setOrigin(0.5).setInteractive();
 
         change.on('pointerdown', function (pointer) {
             this.scene.start('StartScene');
         }, this);
 
-        this.add.image(400,330, "background");
+        this.add.image(400,300, "background");
         
         let graphics = this.add.graphics();
-        graphics.fillStyle(999999,90).fillRect(80, 130, 650, 400);
+        graphics.fillStyle(987654,90).fillRect(80, 130, 650, 400); //987654を色にしているけどわからない
 
         this.add.text(90 , 140, "RESULT", {fontSize: 30,fontFamily: "impact"});
         this.add.text(160, 230, "VICTORY!!", {fontSize: 70,fontFamily: "fantasy"});
@@ -43,7 +43,7 @@ export class ResultScene extends Phaser.Scene {
         this.add.text(300, 360, "対", {fontSize: 30,fontFamily: "Arial"});
         this.add.text(300, 400, "対", {fontSize: 30,fontFamily: "Arial"});
 
-        this.add.line(0,120,1000,200,400,200,0xff0000);//line
+        this.add.line(0,120,1000,200,400,200,0x779877);//line 一番最後が色だと思うけどわからない
 
         
     }

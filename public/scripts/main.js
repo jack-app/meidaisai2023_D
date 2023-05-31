@@ -7,8 +7,8 @@ import { ResultScene } from "./scenes/ResultScene.js"
 const config = {
     parent: 'mainFrame',
     type: Phaser.AUTO,
-    height: 600,
-    width: 800,
+    height: 500,
+    width: 900,
     scene: [StartScene, PlayScene, ResultScene],
 
     physics: {
