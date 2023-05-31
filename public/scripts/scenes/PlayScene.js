@@ -1,4 +1,6 @@
 import { Judgeyaku } from "../common.js";
+import Card from "../Card.js";
+import { CARDS } from "../main.js";
 
 export class PlayScene extends Phaser.Scene {
     constructor() {
@@ -9,8 +11,8 @@ export class PlayScene extends Phaser.Scene {
     init() {
         // Can be defined on your own Scenes.
         // This method is called by the Scene Manager when the scene starts, before preload() and create().
-        console.log(Judgeyaku([100,300,800])); //{yakus:[{num:1,name:'三光'}],mon:5}
-        console.log(Judgeyaku([100,]));        //{yakus:[],mon:0}
+        //console.log(Judgeyaku([100,300,800])); //{yakus:[{num:1,name:'三光'}],mon:5}
+        //console.log(Judgeyaku([100,]));        //{yakus:[],mon:0}
     }
 
 
@@ -18,6 +20,9 @@ export class PlayScene extends Phaser.Scene {
         // Can be defined on your own Scenes. Use it to load assets.
         // This method is called by the Scene Manager, after init() and before create(), only if the Scene has a LoaderPlugin.
         // After this method completes, if the LoaderPlugin's queue isn't empty, the LoaderPlugin will start automatically
+        for(let i=0;i<CARDS.length;i++){
+            this.load.image(CARDS[i].toString(), "./images/"+CARDS[i].toString()+".jpeg");
+        }
     }
 
 
@@ -29,6 +34,50 @@ export class PlayScene extends Phaser.Scene {
 
 	    const change = this.add.text(150, 130, 'Change Scene!').setFontSize(20).setFontFamily("Arial").setOrigin(0.5).setInteractive();
 
+        this.field_cards=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
+        this.player_cards=[]
+        this.player_got_cards=[[],[],[],[]]
+        this.enemy_cards=[]
+        this.enemy_cards_back=[]
+        this.enemy_got_cards=[[],[],[],[]]
+        for(let i=0;i<8;i++){
+            this.field_cards[i].push(new Card(this,1230,0));
+            this.player_cards.push(new Card(this,1230,0));
+            this.enemy_cards.push(new Card(this,1230,0));
+            this.#toPlayerGotCard(new Card(this,CARDS[i],0));
+            this.#toEnemyGotCard(new Card(this,CARDS[i],0));
+        }
+        this.field_cards.forEach((card_list, i) => {  
+            card_list.forEach((card, j) => { 
+                if(i%2==0){
+                    card.setPosition(
+                        100 * (Math.floor(i/2)) +250+10*j,
+                        this.sys.canvas.height * 0.4
+                    );
+                }else{
+                    card.setPosition(
+                        100 * (Math.floor(i/2)) +250+10*j,
+                        this.sys.canvas.height * 0.6
+                    );    
+                }
+                this.add.existing(card);
+            });
+        });
+        this.player_cards.forEach((card, i) => {   
+            card.setPosition(
+                30 * (i) +50,
+                this.sys.canvas.height * 0.9
+            );
+        this.add.existing(card);
+        });
+        for(let i=0;i<8;i++){
+            let back_side=this.add.graphics();
+            back_side.fillStyle(0x000000, 1).fillRect(30 * (i) +30,this.sys.canvas.height * 0.1-35, 40,70);
+            this.enemy_cards_back.push(back_side);
+        this.add.existing(back_side);
+        };
+
+
         change.on('pointerdown', function (pointer) {
             this.scene.start('ResultScene');
         }, this);
@@ -37,5 +86,27 @@ export class PlayScene extends Phaser.Scene {
 
     update() {
         // https://photonstorm.github.io/phaser3-docs/Phaser.Scene.html#update
+    }
+
+    #toPlayerGotCard(card){
+        let card_type=Math.floor((card.number%100)/10);
+        console.log(card_type);
+        console.log(this.player_got_cards[card_type]);
+        card.setPosition(
+            100*(card_type) + 10 * (this.player_got_cards[card_type].length) +500,
+            this.sys.canvas.height * 0.9
+        );
+        this.player_got_cards[card_type].push(card);
+        this.add.existing(card);
+    }
+
+    #toEnemyGotCard(card){
+        let card_type=Math.floor((card.number%100)/10);
+        card.setPosition(
+            100*(card_type) + 10 * (this.enemy_got_cards[card_type].length) +500,
+            this.sys.canvas.height * 0.1
+        );
+        this.enemy_got_cards[card_type].push(card);
+        this.add.existing(card);
     }
 }
