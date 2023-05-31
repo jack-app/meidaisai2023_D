@@ -96,6 +96,10 @@ export function Judgeyaku(handlist){
 			yaku.mon+=1;
 		}	
 
+		if(yaku_akatan===1 && hand.has(1020)){
+			yaku.mon+=1;
+		}
+
 		if(yaku_akatan===1 && hand.has(1120)){
 			yaku.mon+=1;
 		}
@@ -135,11 +139,14 @@ export function Judgeyaku(handlist){
 			yaku.mon+=1;
 		}
 
-	
+		if(yaku_aotan===1 && hand.has(1120)){
+			yaku.mon+=1;
+		}
 
-		let tane = hand.filter( function( value ) {
+
+		let tane = handlist.filter( function( value ) {
  
-			return    9 < (value%100) <20;
+			return  value % 100 >= 10 && value % 100 <= 19;
 		 
 		})
 
@@ -147,6 +154,36 @@ export function Judgeyaku(handlist){
 
 			yaku.yakus.push('タネ');
 			yaku.mon += (tane.length - 4);
+
+		}
+
+
+
+		let tann = handlist.filter( function( value ) {
+ 
+			return  value % 100 >= 20 && value % 100 <= 29;
+		 
+		})
+
+		if(tann.length >= 5){
+
+			yaku.yakus.push('タン');
+			yaku.mon += (tann.length - 4);
+
+		}
+
+
+
+		let kasu = handlist.filter( function( value ) {
+ 
+			return  value % 100 >= 30 && value % 100 <= 39;
+		 
+		})
+
+		if(kasu.length >= 10 ){
+
+			yaku.yakus.push('カス');
+			yaku.mon += (kasu.length - 9);
 
 		}
 
