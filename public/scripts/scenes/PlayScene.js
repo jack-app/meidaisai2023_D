@@ -20,6 +20,7 @@ export class PlayScene extends Phaser.Scene {
         // Can be defined on your own Scenes. Use it to load assets.
         // This method is called by the Scene Manager, after init() and before create(), only if the Scene has a LoaderPlugin.
         // After this method completes, if the LoaderPlugin's queue isn't empty, the LoaderPlugin will start automatically
+        // 花札の画像を読み込む
         for(let i=0;i<CARDS.length;i++){
             this.load.image(CARDS[i].toString(), "./images/"+CARDS[i].toString()+".jpeg");
         }
@@ -38,8 +39,9 @@ export class PlayScene extends Phaser.Scene {
         this.player_cards=[]
         this.player_got_cards=[[],[],[],[]]
         this.enemy_cards=[]
-        this.enemy_cards_back=[]
+        this.enemy_cards_back=[]//札の裏側のオブジェクトを入れる
         this.enemy_got_cards=[[],[],[],[]]
+
         for(let i=0;i<8;i++){
             this.field_cards[i].push(new Card(this,1230,0));
             this.player_cards.push(new Card(this,1230,0));
@@ -47,6 +49,8 @@ export class PlayScene extends Phaser.Scene {
             this.#toPlayerGotCard(new Card(this,CARDS[i],0));
             this.#toEnemyGotCard(new Card(this,CARDS[i],0));
         }
+
+        //場の札を表示
         this.field_cards.forEach((card_list, i) => {  
             card_list.forEach((card, j) => { 
                 if(i%2==0){
@@ -63,6 +67,8 @@ export class PlayScene extends Phaser.Scene {
                 this.add.existing(card);
             });
         });
+
+        //自分の手札を表示
         this.player_cards.forEach((card, i) => {   
             card.setPosition(
                 30 * (i) +50,
@@ -70,6 +76,8 @@ export class PlayScene extends Phaser.Scene {
             );
         this.add.existing(card);
         });
+
+        //相手の手札の裏面を表示
         for(let i=0;i<8;i++){
             let back_side=this.add.graphics();
             back_side.fillStyle(0x000000, 1).fillRect(30 * (i) +30,this.sys.canvas.height * 0.1-35, 40,70);
@@ -88,6 +96,7 @@ export class PlayScene extends Phaser.Scene {
         // https://photonstorm.github.io/phaser3-docs/Phaser.Scene.html#update
     }
 
+    //自分が手に入れた札を表示
     #toPlayerGotCard(card){
         let card_type=Math.floor((card.number%100)/10);
         console.log(card_type);
@@ -100,6 +109,7 @@ export class PlayScene extends Phaser.Scene {
         this.add.existing(card);
     }
 
+    //相手が手に入れた札を表示
     #toEnemyGotCard(card){
         let card_type=Math.floor((card.number%100)/10);
         card.setPosition(
