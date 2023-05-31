@@ -2,7 +2,7 @@
 //     console.log(Judgeyaku([100]));        //{yakus:[],mon:0}
 //     ※役がない場合はyakus:[],mon:0
 // Playscene.jsにデバッグ用コードあるよ
-export const YAKU={1:'五光',2:'四光',3:'雨四光',4:'三光',5:'花見酒',6:'月見酒',7:'猪鹿蝶',8:'赤短',9:'青短',10:'タネ',11:'タン',12:'カス'}//ここで役の一覧を管理すると分かりやすいかも
+export const YAKU={1:'五光',2:'四光',3:'雨四光',4:'三光',5:'花見酒',6:'月見酒',7:'猪鹿蝶',8:'赤短',9:'青短',10:'タネ',11:'タン',12:'カス',13:'赤短青短'}//ここで役の一覧を管理すると分かりやすいかも
 
 export function Judgeyaku(handlist){
 	let hand =new Set(handlist);
@@ -62,84 +62,118 @@ export function Judgeyaku(handlist){
 	if(hand.has(710) && hand.has(1010) && hand.has(610)){
 
 		yaku.yakus.push('猪鹿蝶');
-		yaku.mon+=6;
+		yaku.mon+=5;
 
 	}
 
+
+
+
+
+
+
+
+	let yaku_akatanaotan = 0;
+
+	if(hand.has(120) && hand.has(220) && hand.has(320) && hand.has(620) && hand.has(920) && hand.has(1020)){
+	
+		yaku.yakus.push('赤短青短');
+		yaku.mon+=10;
+		yaku_akatanaotan+=1;
+
+	}
+
+		if(yaku_akatanaotan===1 && hand.has(420)){
+			yaku.mon+=1;
+		}
+
+		if(yaku_akatanaotan===1 && hand.has(520)){
+			yaku.mon+=1;
+		}
+
+		if(yaku_akatanaotan===1 && hand.has(720)){
+			yaku.mon+=1;
+		}
+
+		if(yaku_akatanaotan===1 && hand.has(1120)){
+			yaku.mon+=1;
+		}
+
+
 	let yaku_akatan = 0;
 
-	if(hand.has(120) && hand.has(220) && hand.has(320)){
+	if(hand.has(120) && hand.has(220) && hand.has(320) && yaku_akatanaotan === 0){
 
 		yaku.yakus.push('赤短');
-		yaku.mon+=6;
+		yaku.mon+=5;
 		yaku_akatan+=1;
 
 	}
 
-		if(yaku_akatan===1 && hand.has(420)){
+		if(yaku_akatan===1 && hand.has(420) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_akatan===1 && hand.has(520)){
+		if(yaku_akatan===1 && hand.has(520) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_akatan===1 && hand.has(620)){
+		if(yaku_akatan===1 && hand.has(620) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_akatan===1 && hand.has(720)){
+		if(yaku_akatan===1 && hand.has(720) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_akatan===1 && hand.has(920)){
+		if(yaku_akatan===1 && hand.has(920) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}	
 
-		if(yaku_akatan===1 && hand.has(1020)){
+		if(yaku_akatan===1 && hand.has(1020) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_akatan===1 && hand.has(1120)){
+		if(yaku_akatan===1 && hand.has(1120) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
 
 	let yaku_aotan = 0;
 
-	if(hand.has(620) && hand.has(920) && hand.has(1020)){
+	if(hand.has(620) && hand.has(920) && hand.has(1020) && yaku_akatanaotan === 0){
 
 		yaku.yakus.push('青短');
-		yaku.mon+=6;
+		yaku.mon+=5;
 		yaku_aotan+=1;
 
 	}
 
-		if(yaku_aotan===1 && hand.has(120)){
+		if(yaku_aotan===1 && hand.has(120) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(220)){
+		if(yaku_aotan===1 && hand.has(220) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(320)){
+		if(yaku_aotan===1 && hand.has(320) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(420)){
+		if(yaku_aotan===1 && hand.has(420) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 	
-		if(yaku_aotan===1 && hand.has(520)){
+		if(yaku_aotan===1 && hand.has(520) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 	
-		if(yaku_aotan===1 && hand.has(720)){
+		if(yaku_aotan===1 && hand.has(720) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(1120)){
+		if(yaku_aotan===1 && hand.has(1120) && yaku_akatanaotan === 0){
 			yaku.mon+=1;
 		}
 
@@ -159,16 +193,16 @@ export function Judgeyaku(handlist){
 
 
 
-		let tann = handlist.filter( function( value ) {
+		let tan = handlist.filter( function( value ) {
  
 			return  value % 100 >= 20 && value % 100 <= 29;
 		 
 		})
 
-		if(tann.length >= 5){
+		if(tan.length >= 5){
 
 			yaku.yakus.push('タン');
-			yaku.mon += (tann.length - 4);
+			yaku.mon += (tan.length - 4);
 
 		}
 
