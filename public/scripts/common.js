@@ -149,31 +149,31 @@ export function Judgeyaku(handlist){
 
 	}
 
-		if(yaku_aotan===1 && hand.has(120) && yaku_akatanaotan === 0){
+		if(yaku_aotan===1 && hand.has(120) && yaku_akatanaotan === 0 && yaku_akatan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(220) && yaku_akatanaotan === 0){
+		if(yaku_aotan===1 && hand.has(220) && yaku_akatanaotan === 0 && yaku_akatan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(320) && yaku_akatanaotan === 0){
+		if(yaku_aotan===1 && hand.has(320) && yaku_akatanaotan === 0 && yaku_akatan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(420) && yaku_akatanaotan === 0){
+		if(yaku_aotan===1 && hand.has(420) && yaku_akatanaotan === 0 && yaku_akatan === 0){
 			yaku.mon+=1;
 		}
 	
-		if(yaku_aotan===1 && hand.has(520) && yaku_akatanaotan === 0){
+		if(yaku_aotan===1 && hand.has(520) && yaku_akatanaotan === 0 && yaku_akatan === 0){
 			yaku.mon+=1;
 		}
 	
-		if(yaku_aotan===1 && hand.has(720) && yaku_akatanaotan === 0){
+		if(yaku_aotan===1 && hand.has(720) && yaku_akatanaotan === 0 && yaku_akatan === 0){
 			yaku.mon+=1;
 		}
 
-		if(yaku_aotan===1 && hand.has(1120) && yaku_akatanaotan === 0){
+		if(yaku_aotan===1 && hand.has(1120) && yaku_akatanaotan === 0 && yaku_akatan === 0){
 			yaku.mon+=1;
 		}
 
@@ -199,7 +199,7 @@ export function Judgeyaku(handlist){
 		 
 		})
 
-		if(tan.length >= 5){
+		if(tan.length >= 5  && yaku_akatanaotan === 0 && yaku_akatan === 0 && yaku_aotan === 0){
 
 			yaku.yakus.push('タン');
 			yaku.mon += (tan.length - 4);
