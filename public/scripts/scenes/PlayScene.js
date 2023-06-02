@@ -35,19 +35,28 @@ export class PlayScene extends Phaser.Scene {
 
 	    const change = this.add.text(150, 130, 'Change Scene!').setFontSize(20).setFontFamily("Arial").setOrigin(0.5).setInteractive();
 
-        this.field_cards=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
-        this.player_cards=[]
-        this.player_got_cards=[[],[],[],[]]
-        this.enemy_cards=[]
-        this.enemy_cards_back=[]//札の裏側のオブジェクトを入れる
-        this.enemy_got_cards=[[],[],[],[]]
-
+        this.field_cards=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+        this.player_cards=[];
+        this.player_got_cards=[[],[],[],[]];
+        this.enemy_cards=[];
+        this.enemy_cards_back=[];//札の裏側のオブジェクトを入れる
+        this.enemy_got_cards=[[],[],[],[]];
+        this.deck=[];
+        let deck_list=CARDS;
+        for (let i = deck_list.length - 1; i >= 0; i--) {
+            let rand = Math.floor(Math.random() * (i + 1))
+            // 配列の要素の順番を入れ替える
+            let tmpStorage = deck_list[i]
+            deck_list[i] = deck_list[rand]
+            deck_list[rand] = tmpStorage
+        }
         for(let i=0;i<8;i++){
-            this.field_cards[i].push(new Card(this,1230,0));
-            this.player_cards.push(new Card(this,1230,0));
-            this.enemy_cards.push(new Card(this,1230,0));
-            this.#toPlayerGotCard(new Card(this,CARDS[i],0));
-            this.#toEnemyGotCard(new Card(this,CARDS[i],0));
+            this.field_cards[i].push(new Card(this,deck_list[i],0));
+            this.player_cards.push(new Card(this,deck_list[8+i],0));
+            this.enemy_cards.push(new Card(this,deck_list[16+i],0));
+        }
+        for(let i=0;i<24;i++){
+            this.deck.push(new Card(this,deck_list[24+i],0));
         }
 
         //場の札を表示
@@ -80,7 +89,7 @@ export class PlayScene extends Phaser.Scene {
         //相手の手札の裏面を表示
         for(let i=0;i<8;i++){
             let back_side=this.add.graphics();
-            back_side.fillStyle(0x000000, 1).fillRect(30 * (i) +30,this.sys.canvas.height * 0.1-35, 40,70);
+            back_side.fillStyle(0x000000, 1).fillRect(this.sys.canvas.width-30 * (i) -70,this.sys.canvas.height * 0.1-35, 40,70);
             this.enemy_cards_back.push(back_side);
         this.add.existing(back_side);
         };
@@ -99,8 +108,6 @@ export class PlayScene extends Phaser.Scene {
     //自分が手に入れた札を表示
     #toPlayerGotCard(card){
         let card_type=Math.floor((card.number%100)/10);
-        console.log(card_type);
-        console.log(this.player_got_cards[card_type]);
         card.setPosition(
             100*(card_type) + 10 * (this.player_got_cards[card_type].length) +500,
             this.sys.canvas.height * 0.9
@@ -113,7 +120,7 @@ export class PlayScene extends Phaser.Scene {
     #toEnemyGotCard(card){
         let card_type=Math.floor((card.number%100)/10);
         card.setPosition(
-            100*(card_type) + 10 * (this.enemy_got_cards[card_type].length) +500,
+            this.sys.canvas.width-100*(card_type) - 10 * (this.enemy_got_cards[card_type].length) -500,
             this.sys.canvas.height * 0.1
         );
         this.enemy_got_cards[card_type].push(card);
