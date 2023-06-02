@@ -260,7 +260,7 @@ export function Judgeyaku(handlist){
 
 
 
-
+ 
 	return yaku;
 
 	
