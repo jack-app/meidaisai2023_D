@@ -4,6 +4,7 @@ export default class Card extends Phaser.GameObjects.Container {
 	constructor(scene, number, place) {
 	  super(scene, 0, 0);
 	  this.setPosition(0, 0);
+	  this.index=-1
 	  this.number=number;
 	  this.image=scene.add
       .image(
