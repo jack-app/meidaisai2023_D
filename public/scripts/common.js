@@ -5,6 +5,6 @@
 export const YAKU={1:'三光',}//ここで役の一覧を管理すると分かりやすいかも
 
 export function Judgeyaku(hand){
-	yaku={yakus:[],mon:0};
+	let yaku={yakus:[],mon:0};
 	return yaku;
 }
