@@ -42,9 +42,9 @@ export class ResultScene extends Phaser.Scene {
         this.add.text(200, 300, "score", {fontSize: 30,fontFamily: "cursive"});
         this.add.text(200, 350, "people", {fontSize: 30,fontFamily: "cursive"});
         this.add.text(350, 300, "100000文", {fontSize: 30,fontFamily: "serif"});
-        this.add.text(350, 350, "1文", {fontSize: 30,fontFamily: "serif"});
+        this.add.text(400, 350, "1", {fontSize: 30,fontFamily: "serif"});
         this.add.text(650, 300, "100文", {fontSize: 30,fontFamily: "serif"});
-        this.add.text(650, 350, "10文", {fontSize: 30,fontFamily: "serif"});
+        this.add.text(680, 350, "10", {fontSize: 30,fontFamily: "serif"});
         this.add.text(550, 350, "対", {fontSize: 30,fontFamily: "Arial"});
         this.add.text(550, 300, "対", {fontSize: 30,fontFamily: "Arial"});
 
