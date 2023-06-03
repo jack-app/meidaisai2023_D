@@ -14,8 +14,10 @@ export class ResultScene extends Phaser.Scene {
         // Can be defined on your own Scenes. Use it to load assets.
         // This method is called by the Scene Manager, after init() and before create(), only if the Scene has a LoaderPlugin.
         // After this method completes, if the LoaderPlugin's queue isn't empty, the LoaderPlugin will start automatically
-        this.load.image("background", "./images/background.png");
-        this.load.image("diamond", "./images/diamond.png");
+        this.load.image("background", "./images/background.png");//背景
+
+
+        this.load.image("diamond", "./images/diamond.png");//線の端
     }
 
 
@@ -25,15 +27,13 @@ export class ResultScene extends Phaser.Scene {
         // If the LoaderPlugin started after preload(), then this method is called only after loading is complete.
         
 
-        this.add.image(450,250, "background"); //よこ,たて
-        
-        
-        
-
+        let backimage = this.add.image(450,250, "background"); //x,y,背景
+        backimage.scaleX = backimage.scaleX * 1.15;
+        backimage.scaleY = backimage.scaleY * 1.15;
+    
 
         let graphics = this.add.graphics();
-        
-        graphics.fillStyle(0x000000,90).fillRect(125,50,650, 400); //fillRect(x, y, width, height) 
+        graphics.fillStyle(0x000000,90).fillRect(125,50,650, 400); //fillRect(x, y, width, height) //黒背景
 
 
         this.add.text(150 , 70, "RESULT", {fontSize: 40,fontFamily: "impact"});
@@ -55,7 +55,6 @@ export class ResultScene extends Phaser.Scene {
 
         //クリックでシーン変更
         const sceneName = this.add.text(100, 20, 'ResultScene').setFontSize(30).setFontFamily("Arial").setOrigin(0.5).setInteractive();
-
 	    const change = this.add.text(700, 70, 'スタートに戻る').setFontSize(20).setFontFamily("Arial").setOrigin(0.5).setInteractive();
 
         change.on('pointerdown', function (pointer) {
