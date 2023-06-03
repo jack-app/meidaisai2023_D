@@ -29,7 +29,8 @@ const config = {
 
 class Game extends Phaser.Game {
     constructor(config) {
-        super(config)
+        super(config);
+
     }
 }
 
