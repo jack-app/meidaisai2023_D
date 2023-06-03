@@ -6,6 +6,7 @@ export default class Card extends Phaser.GameObjects.Container {
 	  this.setPosition(0, 0);
 	  this.index=-1
 	  this.number=number;
+	 
 	  this.image=scene.add
       .image(
         0,
@@ -13,6 +14,9 @@ export default class Card extends Phaser.GameObjects.Container {
         number.toString()
       )
 	  this.image.setDisplaySize(40, 70);
+	  this.setSize(40,70);
 	  this.add(this.image);
+
+	  this.setInteractive();
 	}
 }

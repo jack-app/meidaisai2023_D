@@ -4,9 +4,8 @@ import { CARDS } from "../main.js";
 
 export class PlayScene extends Phaser.Scene {
     constructor() {
-        super({ key: "PlayScene" })
+        super({ key: "PlayScene" });
     }
-
 
     init() {
         // Can be defined on your own Scenes.
@@ -15,50 +14,136 @@ export class PlayScene extends Phaser.Scene {
         //console.log(Judgeyaku([100,]));        //{yakus:[],mon:0}
     }
 
-
     preload() {
         // Can be defined on your own Scenes. Use it to load assets.
         // This method is called by the Scene Manager, after init() and before create(), only if the Scene has a LoaderPlugin.
         // After this method completes, if the LoaderPlugin's queue isn't empty, the LoaderPlugin will start automatically
-        this.load.image('backimage','/public/images/background.png')
+        this.load.image("backimage", "/public/images/background.png");
         // 花札の画像を読み込む
-        for(let i=0;i<CARDS.length;i++){
-            this.load.image(CARDS[i].toString(), "./images/"+CARDS[i].toString()+".jpeg");
+        for (let i = 0; i < CARDS.length; i++) {
+            this.load.image(
+                CARDS[i].toString(),
+                "./images/" + CARDS[i].toString() + ".jpeg"
+            );
         }
     }
-
 
     create() {
         // Can be defined on your own Scenes. Use it to create your game objects.
         // This method is called by the Scene Manager when the scene starts, after init() and preload().
         // If the LoaderPlugin started after preload(), then this method is called only after loading is complete.
-        
-        let backimage = this.add.image(450,250,'backimage')
-             backimage.scaleX = backimage.scaleX * 1.15;
-             backimage.scaleY = backimage.scaleY * 1.15;
-        
-        const sceneName = this.add.text(150, 70, 'PlayScene').setFontSize(30).setFontFamily("Arial").setOrigin(0.5).setInteractive();
 
-	    const change = this.add.text(150, 130, 'Change Scene!').setFontSize(20).setFontFamily("Arial").setOrigin(0.5).setInteractive();
+        let backimage = this.add.image(450, 250, "backimage");
+        backimage.scaleX = backimage.scaleX * 1.15;
+        backimage.scaleY = backimage.scaleY * 1.15;
 
-        this.field_cards=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
-        this.player_cards=[];
-        this.player_got_cards=[[],[],[],[]];
-        this.enemy_cards=[];
-        this.enemy_cards_back=[];//札の裏側のオブジェクトを入れる
-        this.enemy_got_cards=[[],[],[],[]];
-        this.deck=[];
-        this.deck_list=CARDS;
+        //場の四角
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x3a3a3a);
+        graphics.fillRect(200, 125, 500, 250); // (x, y, width, height)
+
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0xffffff);
+        graphics.fillRect(205, 130, 490, 240);
+
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x3a3a3a);
+        graphics.fillRect(206, 131, 488, 238);
+
+        //AIplayer 持ち札
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x1a1919);
+        graphics.fillRect(10, 0, 500, 120); // (x, y, width, height)
+
+        //player 持ち札
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x1a1919);
+        graphics.fillRect(390, 380, 500, 120); // (x, y, width, height)
+
+        //AIplayer name
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x282828);
+        graphics.fillRect(690, 100, 200, 50); // (x, y, width, height)
+
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0xffffff);
+        graphics.fillRect(695, 105, 190, 40); // (x, y, width, height)
+
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x282828);
+        graphics.fillRect(696, 106, 188, 38); // (x, y, width, height)
+
+        //player name
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x282828);
+        graphics.fillRect(10, 340, 200, 50); // (x, y, width, height)
+
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0xffffff);
+        graphics.fillRect(15, 345, 190, 40);
+
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x282828);
+        graphics.fillRect(16, 346, 188, 38);
+
+        //name
+        this.add.text(50, 350, "Player").setFontSize(30);
+
+        this.add.text(770, 110, "AI").setFontSize(30);
+
+        //シーン切り替え
+        const sceneName = this.add
+            .text(150, 70, "PlayScene")
+            .setFontSize(30)
+            .setFontFamily("Arial")
+            .setOrigin(0.5)
+            .setInteractive();
+
+        const change = this.add
+            .text(150, 130, "Change Scene!")
+            .setFontSize(20)
+            .setFontFamily("Arial")
+            .setOrigin(0.5)
+            .setInteractive();
+
+        //札
+
+        this.field_cards = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+        ];
+        this.player_cards = [];
+        this.selected = -1;
+        this.player_got_cards = [[], [], [], []];
+        this.enemy_cards = [];
+        this.enemy_cards_back = []; //札の裏側のオブジェクトを入れる
+        this.enemy_got_cards = [[], [], [], []];
+        this.deck = [];
+        this.deck_list = CARDS;
         while (true) {
             for (let i = this.deck_list.length - 1; i >= 0; i--) {
-                let rand = Math.floor(Math.random() * (i + 1))
+                let rand = Math.floor(Math.random() * (i + 1));
                 // 配列の要素の順番を入れ替える
                 let tmpStorage = this.deck_list[i];
                 this.deck_list[i] = this.deck_list[rand];
                 this.deck_list[rand] = tmpStorage;
             }
             for (let i = 0; i > 5; i--) {
-                let rand = Math.floor(Math.random() * (i + 1))
+                let rand = Math.floor(Math.random() * (i + 1));
                 // 配列の要素の順番を入れ替える
                 let tmpStorage = this.deck_list[i];
                 this.deck_list[i] = this.deck_list[rand];
@@ -66,95 +151,130 @@ export class PlayScene extends Phaser.Scene {
             }
             break;
         }
-        for(let i=0;i<8;i++){
-            this.player_cards.push(new Card(this,this.deck_list[i],0));
-            this.enemy_cards.push(new Card(this,this.deck_list[8+i],0));
-            this.field_cards[i].push(new Card(this,this.deck_list[16+i],0));
+        for (let i = 0; i < 8; i++) {
+            this.player_cards.push(new Card(this, this.deck_list[i], 0));
+            this.enemy_cards.push(new Card(this, this.deck_list[8 + i], 0));
+            this.field_cards[i].push(new Card(this, this.deck_list[16 + i], 0));
         }
-        for(let i=0;i<24;i++){
-            this.deck.push(new Card(this,this.deck_list[24+i],0));
+        for (let i = 0; i < 24; i++) {
+            this.deck.push(new Card(this, this.deck_list[24 + i], 0));
         }
 
         //場の札を表示
-        this.field_cards.forEach((card_list, i) => {  
-            card_list.forEach((card, j) => { 
-                if(i%2==0){
+        this.field_cards.forEach((card_list, i) => {
+            card_list.forEach((card, j) => {
+                if (i % 2 == 0) {
                     card.setPosition(
-                        100 * (Math.floor(i/2)) +250+10*j,
+                        100 * Math.floor(i / 2) + 250 + 10 * j,
                         this.sys.canvas.height * 0.4
                     );
-                }else{
+                } else {
                     card.setPosition(
-                        100 * (Math.floor(i/2)) +250+10*j,
+                        100 * Math.floor(i / 2) + 250 + 10 * j,
                         this.sys.canvas.height * 0.6
-                    );    
+                    );
                 }
+
+                //場の札
+                card.on(
+                    "pointerdown",
+                    function (pointer) {
+                        if (this.selected != -1) {
+                            if (
+                                Math.floor(card.number / 100) ==
+                                Math.floor(this.selected / 100)
+                            ) {
+                                this.player_cards.forEach((player_card, k) => {
+                                    if (player_card.number == this.selected) {
+                                        this.#toPlayerGotCard(player_card);
+                                        this.player_cards.splice(k, 1);
+                                    }
+                                });
+
+                                this.field_cards[i].forEach((field_card, k) => {
+                                    this.#toPlayerGotCard(field_card);
+                                });
+
+                                this.field_cards[i] = [];
+                            }
+                        }
+                    },
+                    this
+                );
+
                 this.add.existing(card);
             });
         });
 
         //自分の手札を表示
-        this.player_cards.forEach((card, i) => {   
-            card.setPosition(
-                30 * (i) +50,
-                this.sys.canvas.height * 0.9
+        this.player_cards.forEach((card, i) => {
+            card.setPosition(30 * i + 50, this.sys.canvas.height * 0.9);
+
+            //自分の手札
+
+            card.on(
+                "pointerdown",
+                function (pointer) {
+                    if (this.selected == card.number) {
+                        this.selected = -1;
+                    } else {
+                        this.selected = card.number;
+                    }
+                    this.player_cards.forEach((card, i) => {
+                        if (this.selected == card.number) {
+                            card.setPosition(
+                                30 * i + 50,
+                                this.sys.canvas.height * 0.8
+                            );
+                        } else {
+                            card.setPosition(
+                                30 * i + 50,
+                                this.sys.canvas.height * 0.9
+                            );
+                        }
+                    });
+                },
+                this
             );
-        this.add.existing(card);
+
+            this.add.existing(card);
         });
 
         //相手の手札の裏面を表示
-        for(let i=0;i<8;i++){
-            let back_side=this.add.graphics();
-            back_side.fillStyle(0x000000, 1).fillRect(this.sys.canvas.width-30 * (i) -70,this.sys.canvas.height * 0.1-35, 40,70);
+        for (let i = 0; i < 8; i++) {
+            let back_side = this.add.graphics();
+            back_side
+                .fillStyle(0x000000, 1)
+                .fillRect(
+                    this.sys.canvas.width - 30 * i - 70,
+                    this.sys.canvas.height * 0.1 - 35,
+                    40,
+                    70
+                );
             this.enemy_cards_back.push(back_side);
-        this.add.existing(back_side);
-        };
+            this.add.existing(back_side);
+        }
 
-
-        change.on('pointerdown', function (pointer) {
-            this.scene.start('ResultScene');
-        }, this);
-
-        //場の四角
-        var graphics = this.add.graphics();
-        graphics.fillStyle(0x3A3A3A); 
-        graphics.fillRect(200, 125, 500, 250); // (x, y, width, height)
-
-        //AIplayer 持ち札
-        var graphics = this.add.graphics();
-        graphics.fillStyle(0x1A1919);
-        graphics.fillRect(10, 0, 500, 120); // (x, y, width, height) 
-
-        //player 持ち札
-        var graphics = this.add.graphics();
-        graphics.fillStyle(0x1A1919);
-        graphics.fillRect(390, 380, 500, 120,); // (x, y, width, height)
-         
-        //AIplayer name
-        var graphics = this.add.graphics();
-        graphics.fillStyle(0x282828);
-        graphics.fillRect(690, 100, 200, 50,); // (x, y, width, height)
-
-        //player name
-        var graphics = this.add.graphics();
-        graphics.fillStyle(0x282828);
-        graphics.fillRect(10, 340, 200, 50,); // (x, y, width, height)
-
-        
-
-        
+        change.on(
+            "pointerdown",
+            function (pointer) {
+                this.scene.start("ResultScene");
+            },
+            this
+        );
     }
-
 
     update() {
         // https://photonstorm.github.io/phaser3-docs/Phaser.Scene.html#update
     }
 
     //自分が手に入れた札を表示
-    #toPlayerGotCard(card){
-        let card_type=Math.floor((card.number%100)/10);
+    #toPlayerGotCard(card) {
+        let card_type = Math.floor((card.number % 100) / 10);
         card.setPosition(
-            100*(card_type) + 10 * (this.player_got_cards[card_type].length) +500,
+            100 * card_type +
+                10 * this.player_got_cards[card_type].length +
+                500,
             this.sys.canvas.height * 0.9
         );
         this.player_got_cards[card_type].push(card);
@@ -162,10 +282,13 @@ export class PlayScene extends Phaser.Scene {
     }
 
     //相手が手に入れた札を表示
-    #toEnemyGotCard(card){
-        let card_type=Math.floor((card.number%100)/10);
+    #toEnemyGotCard(card) {
+        let card_type = Math.floor((card.number % 100) / 10);
         card.setPosition(
-            this.sys.canvas.width-100*(card_type) - 10 * (this.enemy_got_cards[card_type].length) -500,
+            this.sys.canvas.width -
+                100 * card_type -
+                10 * this.enemy_got_cards[card_type].length -
+                500,
             this.sys.canvas.height * 0.1
         );
         this.enemy_got_cards[card_type].push(card);
