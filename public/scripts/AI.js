@@ -8,7 +8,7 @@ const pair_check = function (hand,field){
             }
         }
 
-    // 結果がなかったときはここに書く
+    // 結果がなかったら
         return -1;
 }
 
