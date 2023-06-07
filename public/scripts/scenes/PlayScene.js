@@ -51,17 +51,23 @@ export class PlayScene extends Phaser.Scene {
         graphics.fillRect(206, 131, 488, 238);
 
         //場に札捨てる
-        graphics.on(
-            "pointerdown",
-            function (pointer) {
-                if (player_cards != field_cards) {
-                    //探す
-                    //おく
-                    console.log("hello");
-                }
-            },
-            this
-        );
+        if (this.selected != -1)
+            graphics.on(
+                "pointerdown",
+                function (pointer) {
+                    if (player_cards != field_cards) {
+                        //探す
+
+                        //おく
+                        console.log("hello");
+                        card.setPosition(
+                            100 * Math.floor(i / 2) + 250 + 10 * j,
+                            this.sys.canvas.height * 0.4
+                        );
+                    }
+                },
+                this
+            );
 
         //AIplayer 持ち札
         var graphics = this.add.graphics();
