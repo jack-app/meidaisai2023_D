@@ -14,6 +14,7 @@ export class StartScene extends Phaser.Scene {
         // After this method completes, if the LoaderPlugin's queue isn't empty, the LoaderPlugin will start automatically
 
         this.load.image("backimage", "/public/images/background.png");
+        this.load.image("title", "/public/images/title4.jpg");
     }
 
     create() {
@@ -25,17 +26,21 @@ export class StartScene extends Phaser.Scene {
         backimage.scaleX = backimage.scaleX * 1.15;
         backimage.scaleY = backimage.scaleY * 1.15;
 
+        let title = this.add.image(455, 250, "title");
+        title.scaleX = backimage.scaleX * 0.65;
+        title.scaleY = backimage.scaleY * 0.65;
+
         const sceneName = this.add
-            .text(150, 70, "StartScene")
+            .text(150, 70, "")
             .setFontSize(30)
             .setFontFamily("Arial")
             .setOrigin(0.5)
             .setInteractive();
 
         const change = this.add
-            .text(150, 130, "Change Scene!")
-            .setFontSize(20)
-            .setFontFamily("Arial")
+            .text(660, 370, "▸GAME START")
+            .setFontSize(30)
+            .setFontFamily("Verdana")
             .setOrigin(0.5)
             .setInteractive();
 
