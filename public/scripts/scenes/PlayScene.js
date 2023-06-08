@@ -1,4 +1,5 @@
 import { Judgeyaku } from "../common.js";
+import pair_check from "../AI.js";
 import Card from "../Card.js";
 import { CARDS } from "../main.js";
 
@@ -443,8 +444,76 @@ export class PlayScene extends Phaser.Scene {
             this.#enemyAction();
         }
     }
-    //ターンを進める関数
+    //AIの行動を進める関数
     #enemyAction() {
+        let pair = pair_check(this.enemy_cards, this.field_cards);
+        if (pair[1] == -1) {
+            if (pair[2] % 2 == 0) {
+                this.enemy_cards[0].setPosition(
+                    100 * Math.floor(pair[2] / 2) + 250,
+                    this.sys.canvas.height * 0.4
+                );
+            } else {
+                this.enemy_cards[0].setPosition(
+                    100 * Math.floor(pair[2] / 2) + 250,
+                    this.sys.canvas.height * 0.6
+                );
+            }
+            this.field_cards[pair[2]].push(this.enemy_cards[0]);
+            this.#fieldCardsInit(this.enemy_cards[0], pair[2]);
+            this.enemy_cards.splice(0, 1);
+            let back_side = this.enemy_cards_back.pop();
+            back_side.destoroy();
+        } else {
+            this.#toEnemyGotCard(this.enemy_cards[pair[0]]);
+            this.enemy_cards.splice(pair[0], 1);
+
+            this.field_cards[pair[1]].forEach((field_card, i) => {
+                this.#toEnemyGotCard(field_card);
+            });
+            this.field_cards[pair[1]] = [];
+        }
+        let picked_card = this.deck.pop();
+        picked_card.setPosition(150, this.sys.canvas.height * 0.5);
+        this.add.existing(picked_card);
+        this.deck_card = picked_card;
+        let fit_index = [];
+        let pos = 15;
+        this.field_cards.forEach((card_list, i) => {
+            if (card_list.length != 0) {
+                if (
+                    Math.floor(card_list[0].number / 100) ==
+                    Math.floor(this.deck_card.number / 100)
+                ) {
+                    fit_index.push(i);
+                }
+            } else {
+                pos = Math.min(pos, i);
+            }
+        });
+        if (fit_index.length == 0) {
+            if (pos % 2 == 0) {
+                picked_card.setPosition(
+                    100 * Math.floor(pos / 2) + 250,
+                    this.sys.canvas.height * 0.4
+                );
+            } else {
+                picked_card.setPosition(
+                    100 * Math.floor(pos / 2) + 250,
+                    this.sys.canvas.height * 0.6
+                );
+            }
+            this.#fieldCardsInit(picked_card, pos);
+            this.field_cards[pos].push(picked_card);
+            this.deck_card = null;
+        } else {
+            this.#toEnemyGotCard(picked_card);
+            this.field_cards[fit_index[0]].forEach((field_card, k) => {
+                this.#toEnemyGotCard(field_card);
+            });
+            this.field_cards[fit_index[0]] = [];
+            this.deck_card = null;
+        }
         this.select_time = false;
     }
 }
