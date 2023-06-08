@@ -71,6 +71,7 @@ export class PlayScene extends Phaser.Scene {
         this.deck_list = CARDS;
         this.shuffle = true;
         this.select_time = false;
+        this.deck_card = null;
 
         let backimage = this.add.image(450, 250, "backimage");
         backimage.scaleX = backimage.scaleX * 1.15;
@@ -99,7 +100,7 @@ export class PlayScene extends Phaser.Scene {
                             pos = Math.min(pos, i);
                         } else {
                             let month = Math.floor(
-                                this.field_cards[i][0] / 100
+                                this.field_cards[i][0].number / 100
                             );
                             if (month == selected_month) {
                                 return;
@@ -120,9 +121,12 @@ export class PlayScene extends Phaser.Scene {
                                 );
                             }
                             this.field_cards[pos].push(player_card);
+                            this.#fieldCardsInit(player_card, pos);
                             this.player_cards.splice(k, 1);
                         }
                     });
+                    this.selected = -1;
+                    this.#advanceTurn();
                 }
             },
             this
@@ -249,45 +253,7 @@ export class PlayScene extends Phaser.Scene {
                     );
                 }
 
-                //場の札
-                card.on(
-                    "pointerdown",
-                    function (pointer) {
-                        if (!this.select_time) {
-                            if (this.selected != -1) {
-                                if (
-                                    Math.floor(card.number / 100) ==
-                                    Math.floor(this.selected / 100)
-                                ) {
-                                    this.player_cards.forEach(
-                                        (player_card, k) => {
-                                            if (
-                                                player_card.number ==
-                                                this.selected
-                                            ) {
-                                                this.#toPlayerGotCard(
-                                                    player_card
-                                                );
-                                                this.player_cards.splice(k, 1);
-                                            }
-                                        }
-                                    );
-
-                                    this.field_cards[i].forEach(
-                                        (field_card, k) => {
-                                            this.#toPlayerGotCard(field_card);
-                                        }
-                                    );
-
-                                    this.field_cards[i] = [];
-                                }
-                            }
-                        }
-                    },
-                    this
-                );
-
-                this.add.existing(card);
+                this.#fieldCardsInit(card, i);
             });
         });
 
@@ -382,10 +348,103 @@ export class PlayScene extends Phaser.Scene {
         this.add.existing(card);
     }
 
+    #fieldCardsInit(card, i) {
+        card.on(
+            "pointerdown",
+            function (pointer) {
+                if (!this.select_time) {
+                    if (this.selected != -1) {
+                        if (
+                            Math.floor(card.number / 100) ==
+                            Math.floor(this.selected / 100)
+                        ) {
+                            this.player_cards.forEach((player_card, k) => {
+                                if (player_card.number == this.selected) {
+                                    this.#toPlayerGotCard(player_card);
+                                    this.player_cards.splice(k, 1);
+                                }
+                            });
+
+                            this.field_cards[i].forEach((field_card, k) => {
+                                this.#toPlayerGotCard(field_card);
+                            });
+
+                            this.field_cards[i] = [];
+                            this.selected = -1;
+                            this.#advanceTurn();
+                        }
+                    }
+                } else {
+                    if (this.deck_card != null) {
+                        if (
+                            Math.floor(card.number / 100) ==
+                            Math.floor(this.deck_card.number / 100)
+                        ) {
+                            this.#toPlayerGotCard(this.deck_card);
+                            this.field_cards[i].forEach((field_card, k) => {
+                                this.#toPlayerGotCard(field_card);
+                            });
+                            this.deck_card = null;
+                            this.field_cards[i] = [];
+                            this.#enemyAction();
+                        }
+                    }
+                }
+            },
+            this
+        );
+
+        this.add.existing(card);
+    }
     //ターンを進める関数
-    #advanceturn(turn) {
-        if (turn == 0) {
-        } else {
+    #advanceTurn() {
+        this.select_time = true;
+        let picked_card = this.deck.pop();
+        picked_card.setPosition(150, this.sys.canvas.height * 0.5);
+        this.add.existing(picked_card);
+        this.deck_card = picked_card;
+        let fit_index = [];
+        let pos = 15;
+        this.field_cards.forEach((card_list, i) => {
+            if (card_list.length != 0) {
+                if (
+                    Math.floor(card_list[0].number / 100) ==
+                    Math.floor(this.deck_card.number / 100)
+                ) {
+                    fit_index.push(i);
+                }
+            } else {
+                pos = Math.min(pos, i);
+            }
+        });
+        if (fit_index.length == 0) {
+            if (pos % 2 == 0) {
+                picked_card.setPosition(
+                    100 * Math.floor(pos / 2) + 250,
+                    this.sys.canvas.height * 0.4
+                );
+            } else {
+                picked_card.setPosition(
+                    100 * Math.floor(pos / 2) + 250,
+                    this.sys.canvas.height * 0.6
+                );
+            }
+            this.#fieldCardsInit(picked_card, pos);
+            this.field_cards[pos].push(picked_card);
+            this.deck_card = null;
+            this.#enemyAction();
+        } else if (fit_index.length == 1) {
+            this.#toPlayerGotCard(picked_card);
+            this.field_cards[fit_index[0]].forEach((field_card, k) => {
+                this.#toPlayerGotCard(field_card);
+            });
+            this.field_cards[fit_index[0]] = [];
+            this.deck_card = null;
+            this.#enemyAction();
         }
+    }
+    //ターンを進める関数
+    #enemyAction() {
+        this.select_time = false;
     }
 }
