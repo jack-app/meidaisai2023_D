@@ -13,8 +13,8 @@ export class StartScene extends Phaser.Scene {
         // This method is called by the Scene Manager, after init() and before create(), only if the Scene has a LoaderPlugin.
         // After this method completes, if the LoaderPlugin's queue isn't empty, the LoaderPlugin will start automatically
 
-        this.load.image("backimage", "/public/images/background.png");
-        this.load.image("title", "/public/images/title4.jpg");
+        this.load.image("backimage", "./images/background.png");
+        this.load.image("title", "./images/title4.jpg");
     }
 
     create() {

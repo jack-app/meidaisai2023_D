@@ -26,8 +26,8 @@ export class PlayScene extends Phaser.Scene {
         // Can be defined on your own Scenes. Use it to load assets.
         // This method is called by the Scene Manager, after init() and before create(), only if the Scene has a LoaderPlugin.
         // After this method completes, if the LoaderPlugin's queue isn't empty, the LoaderPlugin will start automatically
-        this.load.image("backimage", "/public/images/background.png");
-        this.load.image("field", "/public/images/field.jpg");
+        this.load.image("backimage", "./images/background.png");
+        this.load.image("field", "./images/field.jpg");
         // 花札の画像を読み込む
         for (let i = 0; i < CARDS.length; i++) {
             this.load.image(
