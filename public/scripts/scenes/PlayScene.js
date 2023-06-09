@@ -315,7 +315,7 @@ export class PlayScene extends Phaser.Scene {
         card.setPosition(
             100 * card_type +
                 10 * this.player_got_cards[card_type].length +
-                500,
+                450,
             this.sys.canvas.height * 0.9
         );
         this.player_got_cards[card_type].push(card);
@@ -329,7 +329,7 @@ export class PlayScene extends Phaser.Scene {
             this.sys.canvas.width -
                 100 * card_type -
                 10 * this.enemy_got_cards[card_type].length -
-                500,
+                450,
             this.sys.canvas.height * 0.1
         );
         this.enemy_got_cards[card_type].push(card);
@@ -377,9 +377,10 @@ export class PlayScene extends Phaser.Scene {
                             this.#toPlayerGotCard(
                                 new Card(this, this.deck_card.number, 0)
                             );
+                            this.deck_card.destroy();
                             this.field_cards[i].forEach((field_card, k) => {
                                 this.#toPlayerGotCard(
-                                    new Card(this, this.field_card.number, 0)
+                                    new Card(this, field_card.number, 0)
                                 );
                                 field_card.destroy();
                             });
@@ -445,7 +446,7 @@ export class PlayScene extends Phaser.Scene {
             this.#koikoiFhase();
         }
     }
-    #koikoiFhase() {
+    async #koikoiFhase() {
         let koikoi_graphics = this.add.graphics();
         let pre_yaku = this.yaku;
         let got_cards = [];
@@ -460,9 +461,11 @@ export class PlayScene extends Phaser.Scene {
             this.#enemyAction();
         } else {
             if (this.player_cards.length == 0) {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
                 setPoints([now_yaku.mon, 0]);
                 this.scene.start("ResultScene");
             }
+            await new Promise((resolve) => setTimeout(resolve, 500));
             let koikoi_graphics = this.add.graphics();
             koikoi_graphics.fillStyle(0x000000, 90).fillRect(125, 50, 650, 400);
             let koikoi_text = this.add
