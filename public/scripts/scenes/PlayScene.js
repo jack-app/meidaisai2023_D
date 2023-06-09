@@ -83,11 +83,11 @@ export class PlayScene extends Phaser.Scene {
         //場の四角
         let field1 = this.add.graphics();
         field1.fillStyle(0x3a3a3a);
-        field1.fillRect(200, 125, 500, 250); // (x, y, width, height)
+        field1.fillRect(100, 125, 700, 250); // (x, y, width, height)
 
         let field2 = this.add.graphics();
         field2.fillStyle(0xffffff);
-        field2.fillRect(205, 130, 490, 240);
+        field2.fillRect(105, 130, 690, 240);
 
         let field3 = this.add.image(450, 250, "field");
         field3.setInteractive();
@@ -136,6 +136,12 @@ export class PlayScene extends Phaser.Scene {
             },
             this
         );
+
+        //山札
+        let deck_back_side = this.add.graphics();
+        deck_back_side
+            .fillStyle(0x000000, 1)
+            .fillRect(130, this.sys.canvas.height * 0.5 - 35, 40, 70);
 
         //AIplayer 持ち札
         let aifield = this.add.graphics();
@@ -342,13 +348,19 @@ export class PlayScene extends Phaser.Scene {
                         ) {
                             this.player_cards.forEach((player_card, k) => {
                                 if (player_card.number == this.selected) {
-                                    this.#toPlayerGotCard(player_card);
+                                    this.#toPlayerGotCard(
+                                        new Card(this, this.selected, 0)
+                                    );
+                                    player_card.destroy();
                                     this.player_cards.splice(k, 1);
                                 }
                             });
 
                             this.field_cards[i].forEach((field_card, k) => {
-                                this.#toPlayerGotCard(field_card);
+                                this.#toPlayerGotCard(
+                                    new Card(this, field_card.number, 0)
+                                );
+                                field_card.destroy();
                             });
 
                             this.field_cards[i] = [];
@@ -362,9 +374,14 @@ export class PlayScene extends Phaser.Scene {
                             Math.floor(card.number / 100) ==
                             Math.floor(this.deck_card.number / 100)
                         ) {
-                            this.#toPlayerGotCard(this.deck_card);
+                            this.#toPlayerGotCard(
+                                new Card(this, this.deck_card.number, 0)
+                            );
                             this.field_cards[i].forEach((field_card, k) => {
-                                this.#toPlayerGotCard(field_card);
+                                this.#toPlayerGotCard(
+                                    new Card(this, this.field_card.number, 0)
+                                );
+                                field_card.destroy();
                             });
                             this.deck_card = null;
                             this.field_cards[i] = [];
@@ -417,9 +434,11 @@ export class PlayScene extends Phaser.Scene {
             this.deck_card = null;
             this.#koikoiFhase();
         } else if (fit_index.length == 1) {
-            this.#toPlayerGotCard(picked_card);
+            this.#toPlayerGotCard(new Card(this, picked_card.number, 0));
+            picked_card.destroy();
             this.field_cards[fit_index[0]].forEach((field_card, k) => {
-                this.#toPlayerGotCard(field_card);
+                this.#toPlayerGotCard(new Card(this, field_card.number, 0));
+                field_card.destroy();
             });
             this.field_cards[fit_index[0]] = [];
             this.deck_card = null;
@@ -535,11 +554,15 @@ export class PlayScene extends Phaser.Scene {
             this.#fieldCardsInit(this.enemy_cards[0], pair[2]);
             this.enemy_cards.splice(0, 1);
         } else {
-            this.#toEnemyGotCard(this.enemy_cards[pair[0]]);
+            this.#toEnemyGotCard(
+                new Card(this, this.enemy_cards[pair[0]].number, 0)
+            );
+            this.enemy_cards[pair[0]].destroy();
             this.enemy_cards.splice(pair[0], 1);
 
             this.field_cards[pair[1]].forEach((field_card, i) => {
-                this.#toEnemyGotCard(field_card);
+                this.#toEnemyGotCard(new Card(this, field_card.number, 0));
+                field_card.destroy();
             });
             this.field_cards[pair[1]] = [];
         }
@@ -581,9 +604,11 @@ export class PlayScene extends Phaser.Scene {
             this.field_cards[pos].push(picked_card);
             this.deck_card = null;
         } else {
-            this.#toEnemyGotCard(picked_card);
+            this.#toEnemyGotCard(new Card(this, picked_card.number, 0));
+            picked_card.destroy();
             this.field_cards[fit_index[0]].forEach((field_card, k) => {
-                this.#toEnemyGotCard(field_card);
+                this.#toEnemyGotCard(new Card(this, field_card.number, 0));
+                field_card.destroy();
             });
             this.field_cards[fit_index[0]] = [];
             this.deck_card = null;
