@@ -17,7 +17,7 @@ const pair_check = function (hand, field) {
     }
 
     // 結果がなかったら
-    return [0, -1, j];
+    return [0, -1, pos];
 };
 
 // memo:テスト用

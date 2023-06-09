@@ -1,7 +1,7 @@
 import { Judgeyaku } from "../common.js";
 import pair_check from "../AI.js";
 import Card from "../Card.js";
-import { CARDS } from "../main.js";
+import { CARDS, setPoints } from "../main.js";
 
 export class PlayScene extends Phaser.Scene {
     constructor() {
@@ -62,6 +62,7 @@ export class PlayScene extends Phaser.Scene {
             [],
             [],
         ];
+        this.yaku = { yakus: [], mon: 0 };
         this.player_cards = [];
         this.selected = -1;
         this.player_got_cards = [[], [], [], []];
@@ -73,6 +74,7 @@ export class PlayScene extends Phaser.Scene {
         this.shuffle = true;
         this.select_time = false;
         this.deck_card = null;
+        this.koikoi = false;
 
         let backimage = this.add.image(450, 250, "backimage");
         backimage.scaleX = backimage.scaleX * 1.15;
@@ -81,11 +83,11 @@ export class PlayScene extends Phaser.Scene {
         //場の四角
         let field1 = this.add.graphics();
         field1.fillStyle(0x3a3a3a);
-        field1.fillRect(200, 125, 500, 250); // (x, y, width, height)
+        field1.fillRect(100, 125, 700, 250); // (x, y, width, height)
 
         let field2 = this.add.graphics();
         field2.fillStyle(0xffffff);
-        field2.fillRect(205, 130, 490, 240);
+        field2.fillRect(105, 130, 690, 240);
 
         let field3 = this.add.image(450, 250, "field");
         field3.setInteractive();
@@ -108,21 +110,23 @@ export class PlayScene extends Phaser.Scene {
                             }
                         }
                     }
+                    let new_field_card = new Card(this, this.selected, 0);
+                    if (pos % 2 == 0) {
+                        new_field_card.setPosition(
+                            100 * Math.floor(pos / 2) + 250,
+                            this.sys.canvas.height * 0.4
+                        );
+                    } else {
+                        new_field_card.setPosition(
+                            100 * Math.floor(pos / 2) + 250,
+                            this.sys.canvas.height * 0.6
+                        );
+                    }
+                    this.field_cards[pos].push(new_field_card);
+                    this.#fieldCardsInit(new_field_card, pos);
                     this.player_cards.forEach((player_card, k) => {
                         if (player_card.number == this.selected) {
-                            if (pos % 2 == 0) {
-                                player_card.setPosition(
-                                    100 * Math.floor(pos / 2) + 250,
-                                    this.sys.canvas.height * 0.4
-                                );
-                            } else {
-                                player_card.setPosition(
-                                    100 * Math.floor(pos / 2) + 250,
-                                    this.sys.canvas.height * 0.6
-                                );
-                            }
-                            this.field_cards[pos].push(player_card);
-                            this.#fieldCardsInit(player_card, pos);
+                            player_card.destroy();
                             this.player_cards.splice(k, 1);
                         }
                     });
@@ -132,6 +136,12 @@ export class PlayScene extends Phaser.Scene {
             },
             this
         );
+
+        //山札
+        let deck_back_side = this.add.graphics();
+        deck_back_side
+            .fillStyle(0x000000, 1)
+            .fillRect(130, this.sys.canvas.height * 0.5 - 35, 40, 70);
 
         //AIplayer 持ち札
         let aifield = this.add.graphics();
@@ -173,21 +183,6 @@ export class PlayScene extends Phaser.Scene {
         this.add.text(50, 350, "Player").setFontSize(30);
 
         this.add.text(770, 110, "AI").setFontSize(30);
-
-        //シーン切り替え
-        const sceneName = this.add
-            .text(150, 70, "PlayScene")
-            .setFontSize(30)
-            .setFontFamily("Arial")
-            .setOrigin(0.5)
-            .setInteractive();
-
-        const change = this.add
-            .text(150, 130, "Change Scene!")
-            .setFontSize(20)
-            .setFontFamily("Arial")
-            .setOrigin(0.5)
-            .setInteractive();
 
         while (this.shuffle) {
             this.shuffle = false;
@@ -308,14 +303,6 @@ export class PlayScene extends Phaser.Scene {
             this.enemy_cards_back.push(back_side);
             this.add.existing(back_side);
         }
-
-        change.on(
-            "pointerdown",
-            function (pointer) {
-                this.scene.start("ResultScene");
-            },
-            this
-        );
     }
 
     update() {
@@ -328,7 +315,7 @@ export class PlayScene extends Phaser.Scene {
         card.setPosition(
             100 * card_type +
                 10 * this.player_got_cards[card_type].length +
-                500,
+                450,
             this.sys.canvas.height * 0.9
         );
         this.player_got_cards[card_type].push(card);
@@ -342,7 +329,7 @@ export class PlayScene extends Phaser.Scene {
             this.sys.canvas.width -
                 100 * card_type -
                 10 * this.enemy_got_cards[card_type].length -
-                500,
+                450,
             this.sys.canvas.height * 0.1
         );
         this.enemy_got_cards[card_type].push(card);
@@ -361,13 +348,19 @@ export class PlayScene extends Phaser.Scene {
                         ) {
                             this.player_cards.forEach((player_card, k) => {
                                 if (player_card.number == this.selected) {
-                                    this.#toPlayerGotCard(player_card);
+                                    this.#toPlayerGotCard(
+                                        new Card(this, this.selected, 0)
+                                    );
+                                    player_card.destroy();
                                     this.player_cards.splice(k, 1);
                                 }
                             });
 
                             this.field_cards[i].forEach((field_card, k) => {
-                                this.#toPlayerGotCard(field_card);
+                                this.#toPlayerGotCard(
+                                    new Card(this, field_card.number, 0)
+                                );
+                                field_card.destroy();
                             });
 
                             this.field_cards[i] = [];
@@ -381,13 +374,19 @@ export class PlayScene extends Phaser.Scene {
                             Math.floor(card.number / 100) ==
                             Math.floor(this.deck_card.number / 100)
                         ) {
-                            this.#toPlayerGotCard(this.deck_card);
+                            this.#toPlayerGotCard(
+                                new Card(this, this.deck_card.number, 0)
+                            );
+                            this.deck_card.destroy();
                             this.field_cards[i].forEach((field_card, k) => {
-                                this.#toPlayerGotCard(field_card);
+                                this.#toPlayerGotCard(
+                                    new Card(this, field_card.number, 0)
+                                );
+                                field_card.destroy();
                             });
                             this.deck_card = null;
                             this.field_cards[i] = [];
-                            this.#enemyAction();
+                            this.#koikoiFhase();
                         }
                     }
                 }
@@ -398,7 +397,7 @@ export class PlayScene extends Phaser.Scene {
         this.add.existing(card);
     }
     //ターンを進める関数
-    #advanceTurn() {
+    async #advanceTurn() {
         this.select_time = true;
         let picked_card = this.deck.pop();
         picked_card.setPosition(150, this.sys.canvas.height * 0.5);
@@ -406,6 +405,7 @@ export class PlayScene extends Phaser.Scene {
         this.deck_card = picked_card;
         let fit_index = [];
         let pos = 15;
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         this.field_cards.forEach((card_list, i) => {
             if (card_list.length != 0) {
                 if (
@@ -433,19 +433,113 @@ export class PlayScene extends Phaser.Scene {
             this.#fieldCardsInit(picked_card, pos);
             this.field_cards[pos].push(picked_card);
             this.deck_card = null;
-            this.#enemyAction();
+            this.#koikoiFhase();
         } else if (fit_index.length == 1) {
-            this.#toPlayerGotCard(picked_card);
+            this.#toPlayerGotCard(new Card(this, picked_card.number, 0));
+            picked_card.destroy();
             this.field_cards[fit_index[0]].forEach((field_card, k) => {
-                this.#toPlayerGotCard(field_card);
+                this.#toPlayerGotCard(new Card(this, field_card.number, 0));
+                field_card.destroy();
             });
             this.field_cards[fit_index[0]] = [];
             this.deck_card = null;
-            this.#enemyAction();
+            this.#koikoiFhase();
         }
     }
+    async #koikoiFhase() {
+        let koikoi_graphics = this.add.graphics();
+        let pre_yaku = this.yaku;
+        let got_cards = [];
+        let yaku_texts = [];
+        for (let i = 0; i < 4; i++) {
+            this.player_got_cards[i].forEach((card) => {
+                got_cards.push(card.number);
+            });
+        }
+        let now_yaku = Judgeyaku(got_cards);
+        if (pre_yaku.mon == now_yaku.mon) {
+            this.#enemyAction();
+        } else {
+            if (this.player_cards.length == 0) {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                setPoints([now_yaku.mon, 0]);
+                this.scene.start("ResultScene");
+            }
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            let koikoi_graphics = this.add.graphics();
+            koikoi_graphics.fillStyle(0x000000, 90).fillRect(125, 50, 650, 400);
+            let koikoi_text = this.add
+                .text(260, 100, "こいこいしますか？", {
+                    fontSize: 40,
+                })
+                .setPadding(4);
+            now_yaku.yakus.forEach((yaku, i) => {
+                if (i % 2 == 0) {
+                    yaku_texts.push(
+                        this.add
+                            .text(200, 175 + 50 * Math.floor(i / 2), yaku, {
+                                fontSize: 30,
+                            })
+                            .setPadding(4)
+                    );
+                } else {
+                    yaku_texts.push(
+                        this.add
+                            .text(600, 175 + 50 * Math.floor(i / 2), yaku, {
+                                fontSize: 30,
+                            })
+                            .setPadding(4)
+                    );
+                }
+            });
+            let mon_text = this.add
+                .text(375, 325, "合計" + now_yaku.mon.toString() + "文", {
+                    fontSize: 30,
+                })
+                .setPadding(4);
+            let koikoi_yes = this.add
+                .text(150, 375, "こいこい!", {
+                    fontSize: 40,
+                })
+                .setPadding(4)
+                .setInteractive();
+            let koikoi_no = this.add
+                .text(615, 375, "あがる", {
+                    fontSize: 40,
+                })
+                .setPadding(4)
+                .setInteractive();
+            koikoi_no.on(
+                "pointerdown",
+                function (pointer) {
+                    setPoints([this.yaku.mon, 0]);
+                    this.scene.start("ResultScene");
+                },
+                this
+            );
+            koikoi_yes.on(
+                "pointerdown",
+                function (pointer) {
+                    this.koikoi = true;
+                    koikoi_text.destroy();
+                    yaku_texts.forEach((yaku_text) => {
+                        yaku_text.destroy();
+                    });
+                    mon_text.destroy();
+                    koikoi_yes.destroy();
+                    koikoi_no.destroy();
+                    koikoi_graphics.destroy();
+                    this.#enemyAction();
+                },
+                this
+            );
+        }
+        this.yaku = now_yaku;
+    }
+
     //AIの行動を進める関数
-    #enemyAction() {
+    async #enemyAction() {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         let pair = pair_check(this.enemy_cards, this.field_cards);
         if (pair[1] == -1) {
             if (pair[2] % 2 == 0) {
@@ -462,23 +556,29 @@ export class PlayScene extends Phaser.Scene {
             this.field_cards[pair[2]].push(this.enemy_cards[0]);
             this.#fieldCardsInit(this.enemy_cards[0], pair[2]);
             this.enemy_cards.splice(0, 1);
-            let back_side = this.enemy_cards_back.pop();
-            back_side.destoroy();
         } else {
-            this.#toEnemyGotCard(this.enemy_cards[pair[0]]);
+            this.#toEnemyGotCard(
+                new Card(this, this.enemy_cards[pair[0]].number, 0)
+            );
+            this.enemy_cards[pair[0]].destroy();
             this.enemy_cards.splice(pair[0], 1);
 
             this.field_cards[pair[1]].forEach((field_card, i) => {
-                this.#toEnemyGotCard(field_card);
+                this.#toEnemyGotCard(new Card(this, field_card.number, 0));
+                field_card.destroy();
             });
             this.field_cards[pair[1]] = [];
         }
+        let back_side = this.enemy_cards_back.pop();
+        back_side.destroy();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         let picked_card = this.deck.pop();
         picked_card.setPosition(150, this.sys.canvas.height * 0.5);
         this.add.existing(picked_card);
         this.deck_card = picked_card;
         let fit_index = [];
         let pos = 15;
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         this.field_cards.forEach((card_list, i) => {
             if (card_list.length != 0) {
                 if (
@@ -507,12 +607,28 @@ export class PlayScene extends Phaser.Scene {
             this.field_cards[pos].push(picked_card);
             this.deck_card = null;
         } else {
-            this.#toEnemyGotCard(picked_card);
+            this.#toEnemyGotCard(new Card(this, picked_card.number, 0));
+            picked_card.destroy();
             this.field_cards[fit_index[0]].forEach((field_card, k) => {
-                this.#toEnemyGotCard(field_card);
+                this.#toEnemyGotCard(new Card(this, field_card.number, 0));
+                field_card.destroy();
             });
             this.field_cards[fit_index[0]] = [];
             this.deck_card = null;
+        }
+        if (this.enemy_cards.length == 0) {
+            let got_cards = [];
+            for (let i = 0; i < 4; i++) {
+                this.enemy_got_cards[i].forEach((card) => {
+                    got_cards.push(card.number);
+                });
+            }
+            let enemy_mon = Judgeyaku(got_cards).mon;
+            if (this.koikoi) {
+                enemy_mon *= 2;
+            }
+            setPoints([0, enemy_mon]);
+            this.scene.start("ResultScene");
         }
         this.select_time = false;
     }
