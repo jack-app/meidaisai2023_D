@@ -541,6 +541,12 @@ export class PlayScene extends Phaser.Scene {
     async #enemyAction() {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         let pair = pair_check(this.enemy_cards, this.field_cards);
+        this.enemy_cards[pair[0]].setPosition(
+            this.sys.canvas.width - 30 * pair[0] - 50,
+            this.sys.canvas.height * 0.1
+        );
+        this.add.existing(this.enemy_cards[pair[0]]);
+        await new Promise((resolve) => setTimeout(resolve, 500));
         if (pair[1] == -1) {
             if (pair[2] % 2 == 0) {
                 this.enemy_cards[0].setPosition(
