@@ -48,15 +48,24 @@ export class ResultScene extends Phaser.Scene {
                 fontSize: 70,
                 fontFamily: "fantasy",
             });
-            this.add.text(500, 200, "congratulations!", {
-                fontSize: 30,
-                fontFamily: "Arial",
-            });
+            if (people[0] >= 80) {
+                this.add.text(500, 200, "congratulations!", {
+                    fontSize: 30,
+                    fontFamily: "Arial",
+                });
+            }
         } else if (points[1] > 0) {
-            this.add.text(160, 160, "DEFEAT...", {
-                fontSize: 70,
-                fontFamily: "fantasy",
-            });
+            if (people[1] >= 80) {
+                this.add.text(160, 160, "GAME OVER...", {
+                    fontSize: 70,
+                    fontFamily: "fantasy",
+                });
+            } else {
+                this.add.text(160, 160, "DEFEAT...", {
+                    fontSize: 70,
+                    fontFamily: "fantasy",
+                });
+            }
         } else {
             this.add.text(160, 160, "DRAW", {
                 fontSize: 70,
@@ -98,9 +107,10 @@ export class ResultScene extends Phaser.Scene {
         console.log(people);
         if (Math.min(people[0], people[1]) == 0) {
             const change = this.add
-                .text(700, 70, "スタートに戻る")
-                .setFontSize(20)
-                .setFontFamily("Arial")
+                .text(660, 70, "スタートに戻る", {
+                    fontSize: 30,
+                    fontFamily: "serif",
+                })
                 .setOrigin(0.5)
                 .setInteractive();
 
@@ -113,9 +123,10 @@ export class ResultScene extends Phaser.Scene {
             );
         } else {
             const change = this.add
-                .text(700, 70, "次のゲームへ")
-                .setFontSize(20)
-                .setFontFamily("Arial")
+                .text(680, 70, "次のゲームへ", {
+                    fontSize: 30,
+                    fontFamily: "serif",
+                })
                 .setOrigin(0.5)
                 .setInteractive();
 
