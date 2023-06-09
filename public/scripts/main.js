@@ -9,6 +9,24 @@ export const CARDS = [
     1130, 1200, 1230, 1231, 1232,
 ];
 
+export let points = [0, 0];
+export let people = [1, 80];
+
+export const setPoints = (value) => {
+    points = value;
+    if (points[0] > 0) {
+        people = [
+            Math.min(people[0] + value[0], 80),
+            Math.max(people[1] - value[0], 0),
+        ];
+    } else {
+        people = [
+            Math.max(people[0] - value[1], 0),
+            Math.min(people[1] + value[1], 80),
+        ];
+    }
+};
+
 const config = {
     parent: "mainFrame",
     type: Phaser.AUTO,

@@ -1,3 +1,5 @@
+import { points, people, setPoints } from "../main.js";
+
 export class ResultScene extends Phaser.Scene {
     constructor() {
         super({ key: "ResultScene" });
@@ -21,6 +23,14 @@ export class ResultScene extends Phaser.Scene {
         // Can be defined on your own Scenes. Use it to create your game objects.
         // This method is called by the Scene Manager when the scene starts, after init() and preload().
         // If the LoaderPlugin started after preload(), then this method is called only after loading is complete.
+        let people_text = people.slice();
+        for (let i = 0; i < 2; i++) {
+            if (people_text[i] > 0) {
+                people_text[i] = +people_text[i].toString() + "億人";
+            } else {
+                people_text[i] = "0人";
+            }
+        }
 
         let backimage = this.add.image(450, 250, "background"); //x,y,背景
         backimage.scaleX = backimage.scaleX * 1.15;
@@ -33,14 +43,27 @@ export class ResultScene extends Phaser.Scene {
             fontSize: 40,
             fontFamily: "impact",
         });
-        this.add.text(160, 160, "VICTORY!!", {
-            fontSize: 70,
-            fontFamily: "fantasy",
-        });
-        this.add.text(500, 200, "congratulations", {
-            fontSize: 30,
-            fontFamily: "Arial",
-        });
+        if (points[0] > 0) {
+            this.add.text(160, 160, "VICTORY!!", {
+                fontSize: 70,
+                fontFamily: "fantasy",
+            });
+            this.add.text(500, 200, "congratulations!", {
+                fontSize: 30,
+                fontFamily: "Arial",
+            });
+        } else if (points[1] > 0) {
+            this.add.text(160, 160, "DEFEAT...", {
+                fontSize: 70,
+                fontFamily: "fantasy",
+            });
+        } else {
+            this.add.text(160, 160, "DRAW", {
+                fontSize: 70,
+                fontFamily: "fantasy",
+            });
+        }
+
         this.add.text(200, 300, "score", {
             fontSize: 30,
             fontFamily: "cursive",
@@ -49,13 +72,22 @@ export class ResultScene extends Phaser.Scene {
             fontSize: 30,
             fontFamily: "cursive",
         });
-        this.add.text(350, 300, "100000文", {
+        this.add.text(350, 300, points[0].toString() + "文", {
             fontSize: 30,
             fontFamily: "serif",
         });
-        this.add.text(400, 350, "1", { fontSize: 30, fontFamily: "serif" });
-        this.add.text(600, 300, "100文", { fontSize: 30, fontFamily: "serif" });
-        this.add.text(600, 350, "10", { fontSize: 30, fontFamily: "serif" });
+        this.add.text(350, 350, people_text[0], {
+            fontSize: 30,
+            fontFamily: "serif",
+        });
+        this.add.text(600, 300, points[1].toString() + "文", {
+            fontSize: 30,
+            fontFamily: "serif",
+        });
+        this.add.text(600, 350, people_text[1], {
+            fontSize: 30,
+            fontFamily: "serif",
+        });
         this.add.text(500, 350, "対", { fontSize: 30, fontFamily: "Arial" });
         this.add.text(500, 300, "対", { fontSize: 30, fontFamily: "Arial" });
 
@@ -63,21 +95,38 @@ export class ResultScene extends Phaser.Scene {
         this.add.image(150, 240, "diamond"); //端ひだり
         this.add.image(750, 240, "diamond"); //端みぎ
         this.add.line(195, 110, 130, 10, 10, 10, 0xffffff); //resultの下の線
+        console.log(people);
+        if (Math.min(people[0], people[1]) == 0) {
+            const change = this.add
+                .text(700, 70, "スタートに戻る")
+                .setFontSize(20)
+                .setFontFamily("Arial")
+                .setOrigin(0.5)
+                .setInteractive();
 
-        const change = this.add
-            .text(700, 70, "スタートに戻る")
-            .setFontSize(20)
-            .setFontFamily("Arial")
-            .setOrigin(0.5)
-            .setInteractive();
+            change.on(
+                "pointerdown",
+                function (pointer) {
+                    this.scene.start("StartScene");
+                },
+                this
+            );
+        } else {
+            const change = this.add
+                .text(700, 70, "次のゲームへ")
+                .setFontSize(20)
+                .setFontFamily("Arial")
+                .setOrigin(0.5)
+                .setInteractive();
 
-        change.on(
-            "pointerdown",
-            function (pointer) {
-                this.scene.start("StartScene");
-            },
-            this
-        );
+            change.on(
+                "pointerdown",
+                function (pointer) {
+                    this.scene.start("PlayScene");
+                },
+                this
+            );
+        }
     }
 
     update() {
