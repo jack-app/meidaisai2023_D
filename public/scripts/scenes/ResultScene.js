@@ -117,6 +117,7 @@ export class ResultScene extends Phaser.Scene {
             change.on(
                 "pointerdown",
                 function (pointer) {
+                    setPoints([1, 0]);
                     this.scene.start("StartScene");
                 },
                 this
