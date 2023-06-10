@@ -1,7 +1,7 @@
 import { Judgeyaku } from "../common.js";
 import pair_check from "../AI.js";
 import Card from "../Card.js";
-import { CARDS, setPoints } from "../main.js";
+import { CARDS, setPoints, people } from "../main.js";
 
 export class PlayScene extends Phaser.Scene {
     constructor() {
@@ -169,20 +169,27 @@ export class PlayScene extends Phaser.Scene {
         //player name
         let playername1 = this.add.graphics();
         playername1.fillStyle(0x282828);
-        playername1.fillRect(10, 340, 200, 50); // (x, y, width, height)
+        playername1.fillRect(10, 340, 260, 50); // (x, y, width, height)
 
         let playername2 = this.add.graphics();
         playername2.fillStyle(0xffffff);
-        playername2.fillRect(15, 345, 190, 40);
+        playername2.fillRect(15, 345, 250, 40);
 
         let playername3 = this.add.graphics();
         playername3.fillStyle(0x282828);
-        playername3.fillRect(16, 346, 188, 38);
+        playername3.fillRect(16, 346, 248, 38);
 
         //name
-        this.add.text(50, 350, "Player").setFontSize(30);
 
-        this.add.text(770, 110, "AI").setFontSize(30);
+        this.add
+            .text(30, 350, "Player" + " " + people[0].toString() + "億人")
+            .setFontSize(30)
+            .setPadding(4);
+
+        this.add
+            .text(710, 110, "AI" + " " + people[1].toString() + "億人")
+            .setFontSize(30)
+            .setPadding(4);
 
         while (this.shuffle) {
             this.shuffle = false;
