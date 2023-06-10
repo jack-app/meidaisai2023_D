@@ -10,7 +10,7 @@ export const CARDS = [
 ];
 
 export let points = [0, 0];
-export let people = [1, 80];
+export let people = [1, 79];
 
 export const setPoints = (value) => {
     points = value;
