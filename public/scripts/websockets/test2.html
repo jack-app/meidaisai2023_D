@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koi-Koi Game</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .setup-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .game-area {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        .hand, .field {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        
+        .card {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            background: white;
+        }
+        
+        .card.selected {
+            background: #e0e0e0;
+            border-color: #666;
+        }
+        
+        .action-button {
+            margin: 5px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Koi-Koi Game</h1>
+        
+        <!-- セットアップフォーム -->
+        <div class="setup-form" id="setupForm">
+            <div class="form-group">
+                <label for="playerName">Player Name:</label>
+                <input type="text" id="playerName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="roomId">Room ID:</label>
+                <input type="number" id="roomId" value="123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="mode">Game Mode:</label>
+                <select id="mode">
+                    <option value="1">Play vs AI</option>
+                    <option value="2">Play vs Player</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="numGames">Number of Games:</label>
+                <input type="number" id="numGames" value="1" min="1">
+            </div>
+            
+            <button class="action-button" onclick="startGame()">Start Game</button>
+        </div>
+        
+        <!-- ゲームエリア -->
+        <div class="game-area" id="gameArea" style="display: none;">
+            <div class="status" id="status"></div>
+            
+            <div class="game-info">
+                <h3>Game Information</h3>
+                <p id="turnInfo">Current Turn: -</p>
+                <p id="scoreInfo">Score: -</p>
+            </div>
+            
+            <div class="hand">
+                <h3>Your Hand</h3>
+                <div id="hand"></div>
+            </div>
+            
+            <div class="field">
+                <h3>Field Cards</h3>
+                <div id="field"></div>
+            </div>
+            
+            <div id="actions"></div>
+        </div>
+    </div>
+
+    <!-- Socket.IOクライアントライブラリの読み込み -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <!-- ゲームクライアントの読み込みと初期化 -->
+    <script type="module">
+        import { KoiKoiClient } from '/scripts/websockets/koiKoiClient.js';
+        
+        // グローバル変数としてクライアントを保存
+        window.gameClient = new KoiKoiClient('http://localhost:5001/koi-koi');
+        
+        // startGame関数をグローバルに公開
+        window.startGame = function() {
+            const playerName = document.getElementById('playerName').value;
+            const roomId = parseInt(document.getElementById('roomId').value);
+            const mode = parseInt(document.getElementById('mode').value);
+            const numGames = parseInt(document.getElementById('numGames').value);
+            
+            if (!playerName || !roomId) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // セットアップフォームを隠してゲームエリアを表示
+            document.getElementById('setupForm').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'block';
+            
+            // ゲーム開始
+            gameClient.enterRoom(playerName, roomId, mode, numGames);
+        };
+    </script>
+</body>
+</html>
