@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "meidaisai2023 TeamD",
   "dependencies": {
+    "express": "^4.21.1",
     "phaser": "^3.60.0",
     "ws": "^8.18.0"
   },
