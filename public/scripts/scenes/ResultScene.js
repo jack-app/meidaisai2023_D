@@ -44,25 +44,33 @@ export class ResultScene extends Phaser.Scene {
             fontFamily: "impact",
         });
         if (points[0] > 0) {
-            this.add.text(160, 160, "VICTORY!!", {
-                fontSize: 70,
+            this.add.text(160, 160, "Round winner : Player 1", {
+                fontSize: 60,
                 fontFamily: "fantasy",
             });
             if (people[0] >= 80) {
-                this.add.text(500, 200, "congratulations!", {
-                    fontSize: 30,
-                    fontFamily: "Arial",
+                this.add.text(160, 160, "Game Finished.", {
+                    fontSize: 60,
+                    fontFamily: "fantasy",
+                });
+                this.add.text(160, 160, "Player 1 is True Gambler.", {
+                    fontSize: 50,
+                    fontFamily: "fantasy",
                 });
             }
         } else if (points[1] > 0) {
             if (people[1] >= 80) {
-                this.add.text(160, 160, "GAME OVER...", {
-                    fontSize: 70,
+                this.add.text(160, 120, "Game Finished.", {
+                    fontSize: 60,
+                    fontFamily: "fantasy",
+                });
+                this.add.text(160, 180, "Player 2 is True Gambler", {
+                    fontSize: 50,
                     fontFamily: "fantasy",
                 });
             } else {
-                this.add.text(160, 160, "DEFEAT...", {
-                    fontSize: 70,
+                this.add.text(160, 160, "Round winner : Player 2", {
+                    fontSize: 60,
                     fontFamily: "fantasy",
                 });
             }
@@ -74,31 +82,31 @@ export class ResultScene extends Phaser.Scene {
         }
 
         this.add.text(200, 300, "score", {
-            fontSize: 30,
+            fontSize: 40,
             fontFamily: "cursive",
         });
-        this.add.text(200, 350, "people", {
-            fontSize: 30,
-            fontFamily: "cursive",
-        });
+        //this.add.text(200, 350, "people", {
+            //fontSize: 30,
+            //fontFamily: "cursive",
+        //});
         this.add.text(350, 300, points[0].toString() + "文", {
-            fontSize: 30,
+            fontSize: 50,
             fontFamily: "serif",
         });
-        this.add.text(350, 350, people_text[0], {
-            fontSize: 30,
-            fontFamily: "serif",
-        });
+        //this.add.text(350, 350, people_text[0], {
+            //fontSize: 30,
+            //fontFamily: "serif",
+        //});
         this.add.text(600, 300, points[1].toString() + "文", {
-            fontSize: 30,
+            fontSize: 50,
             fontFamily: "serif",
         });
-        this.add.text(600, 350, people_text[1], {
-            fontSize: 30,
-            fontFamily: "serif",
-        });
-        this.add.text(500, 350, "対", { fontSize: 30, fontFamily: "Arial" });
-        this.add.text(500, 300, "対", { fontSize: 30, fontFamily: "Arial" });
+        //this.add.text(600, 350, people_text[1], {
+            //fontSize: 30,
+            //fontFamily: "serif",
+        //});
+        //this.add.text(500, 350, "対", { fontSize: 30, fontFamily: "Arial" });
+        this.add.text(500, 310, "対", { fontSize: 30, fontFamily: "Arial" });
 
         this.add.line(50, 40, 1000, 200, 400, 200, 0xffff00); //line (x,y,x1,y1,x2,y2,color,)
         this.add.image(150, 240, "diamond"); //端ひだり
@@ -107,7 +115,7 @@ export class ResultScene extends Phaser.Scene {
         console.log(people);
         if (Math.min(people[0], people[1]) == 0) {
             const change = this.add
-                .text(660, 70, "スタートに戻る", {
+                .text(660, 70, "New Game", {
                     fontSize: 30,
                     fontFamily: "serif",
                 })
@@ -124,7 +132,7 @@ export class ResultScene extends Phaser.Scene {
             );
         } else {
             const change = this.add
-                .text(680, 70, "次のゲームへ", {
+                .text(680, 70, "Next Round", {
                     fontSize: 30,
                     fontFamily: "serif",
                 })
